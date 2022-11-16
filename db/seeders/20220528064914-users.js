@@ -3,6 +3,7 @@
 const {Op} = require('sequelize');
 const bcrypt = require('bcryptjs');
 const {Role} = require('../../app/models');
+const admin = require('../../config/admin');
 
 const names = [
   'Johnny',
@@ -24,6 +25,12 @@ module.exports = {
       },
     });
 
+    const roleAdmin = await Role.findOne({
+      where: {
+        name: 'ADMIN',
+      },
+    });
+
     const users = names.map((name) => ({
       name,
       email: `${name.toLowerCase()}@binar.co.id`,
@@ -32,6 +39,14 @@ module.exports = {
       createdAt: timestamp,
       updatedAt: timestamp,
     }));
+    users.push({
+      name: admin.name,
+      email: admin.email,
+      encryptedPassword: bcrypt.hashSync(admin.password, 10),
+      roleId: roleAdmin.id,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
 
     await queryInterface.bulkInsert('Users', users, {});
   },
