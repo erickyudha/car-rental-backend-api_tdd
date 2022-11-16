@@ -2,9 +2,9 @@ const AuthenticationController = require('./AuthenticationController');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const {
-  User,
   Role,
 } = require('../models');
+const User = {};
 const {
   EmailAlreadyTakenError,
   EmailNotRegisteredError,
