@@ -412,7 +412,6 @@ describe('CarController', () => {
           expect(mockCarModel.update).toHaveBeenCalledWith(
               mockCarReq, {where: {id: mockReq.params.id}});
           expect(mockRes.status).toHaveBeenCalledWith(200);
-          expect(mockRes.json).toHaveBeenCalledWith(defaultMockCar);
         });
 
     it('should res.status(422) and return err instance on general error.',
