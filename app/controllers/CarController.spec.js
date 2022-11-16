@@ -394,12 +394,9 @@ describe('CarController', () => {
           };
           const mockRes = {...defaultMockRes};
 
-          const mockCarRes = {
-            ...defaultMockCar,
-            update: jest.fn().mockReturnThis(),
-          };
           const mockCarModel = {
-            findByPk: jest.fn().mockReturnValue(mockCarRes),
+            findByPk: jest.fn().mockReturnValue(defaultMockCar),
+            update: jest.fn().mockReturnThis(),
           };
           const mockUserCarModel = {};
 
@@ -412,9 +409,10 @@ describe('CarController', () => {
           await controller.handleUpdateCar(mockReq, mockRes);
 
           expect(mockCarModel.findByPk).toHaveBeenCalled();
-          expect(mockCarRes.update).toHaveBeenCalledWith(mockCarReq);
+          expect(mockCarModel.update).toHaveBeenCalledWith(
+              mockCarReq, {where: {id: mockReq.params.id}});
           expect(mockRes.status).toHaveBeenCalledWith(200);
-          expect(mockRes.json).toHaveBeenCalledWith(mockCarRes);
+          expect(mockRes.json).toHaveBeenCalledWith(defaultMockCar);
         });
 
     it('should res.status(422) and return err instance on general error.',
@@ -435,12 +433,10 @@ describe('CarController', () => {
           const mockRes = {...defaultMockRes};
 
           const err = new Error('Sus error');
-          const mockCarRes = {
-            ...defaultMockCar,
-            update: jest.fn().mockRejectedValue(err),
-          };
+
           const mockCarModel = {
-            findByPk: jest.fn().mockReturnValue(mockCarRes),
+            findByPk: jest.fn().mockReturnValue(defaultMockCar),
+            update: jest.fn().mockRejectedValue(err),
           };
           const mockUserCarModel = {};
 
@@ -473,8 +469,13 @@ describe('CarController', () => {
           end: jest.fn(),
         }),
       };
+
+      const mockDestroy = jest.fn().mockReturnValue(1);
       const mockCarModel = {
-        destroy: jest.fn().mockReturnValue(true),
+        findByPk: jest.fn().mockReturnValue({
+          ...defaultMockCar,
+          destroy: mockDestroy,
+        }),
       };
 
       const controller = new CarController({
@@ -484,7 +485,7 @@ describe('CarController', () => {
       });
       await controller.handleDeleteCar(mockReq, mockRes);
 
-      expect(mockCarModel.destroy).toHaveBeenCalled();
+      expect(mockDestroy).toHaveBeenCalled();
       expect(mockRes.status).toHaveBeenCalledWith(204);
     });
 
@@ -499,9 +500,8 @@ describe('CarController', () => {
           end: jest.fn(),
         }),
       };
-
       const mockCarModel = {
-        destroy: jest.fn().mockReturnValue(false),
+        findByPk: jest.fn().mockReturnValue(false),
       };
       const controller = new CarController({
         carModel: mockCarModel,
@@ -510,7 +510,6 @@ describe('CarController', () => {
       });
       await controller.handleDeleteCar(mockReq, mockRes);
 
-      expect(mockCarModel.destroy).toHaveBeenCalled();
       expect(mockRes.status).toHaveBeenCalledWith(404);
     });
   });
