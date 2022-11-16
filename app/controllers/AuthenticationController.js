@@ -4,6 +4,7 @@ const {
   InsufficientAccessError,
   RecordNotFoundError,
   WrongPasswordError,
+  EmailAlreadyTakenError,
 } = require('../errors');
 const {JWT_SIGNATURE_KEY} = require('../../config/application');
 
@@ -93,7 +94,6 @@ class AuthenticationController extends ApplicationController {
       const email = req.body.email.toLowerCase();
       const password = req.body.password;
       const existingUser = await this.userModel.findOne({where: {email}});
-
       if (!!existingUser) {
         const err = new EmailAlreadyTakenError(email);
         res.status(422).json(err);
@@ -125,7 +125,7 @@ class AuthenticationController extends ApplicationController {
     const user = await this.userModel.findByPk(req.user.id);
 
     if (!user) {
-      const err = new RecordNotFoundError(this.userModel.name);
+      const err = new RecordNotFoundError(req.user.name);
       res.status(404).json(err);
       return;
     }
@@ -133,7 +133,7 @@ class AuthenticationController extends ApplicationController {
     const role = await this.roleModel.findByPk(user.roleId);
 
     if (!role) {
-      const err = new RecordNotFoundError(this.roleModel.name);
+      const err = new RecordNotFoundError(req.user.name);
       res.status(404).json(err);
       return;
     }
