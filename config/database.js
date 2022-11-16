@@ -5,6 +5,7 @@ const {
   DB_NAME = 'bcr',
   DB_HOST = '127.0.0.1',
   DB_PORT = '5432',
+  DB_LOG = false,
 } = process.env;
 
 module.exports = {
@@ -15,6 +16,7 @@ module.exports = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'postgres',
+    logging: DB_LOG,
   },
   test: {
     username: DB_USER,
@@ -23,6 +25,7 @@ module.exports = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'postgres',
+    logging: DB_LOG,
   },
   production: {
     username: DB_USER,
@@ -31,5 +34,6 @@ module.exports = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'postgres',
+    logging: DB_LOG,
   },
 };
