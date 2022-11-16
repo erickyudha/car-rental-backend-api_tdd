@@ -515,7 +515,7 @@ describe('AuthenticationController', () => {
     });
 
     it('should res.status(404) with RecordNotFoundError ' +
-     'if user or role not found.',
+     'if user not found.',
     async () => {
       const mockReq = {
         user: mockUser,
@@ -527,6 +527,37 @@ describe('AuthenticationController', () => {
 
       const mockUserModel = {
         findByPk: jest.fn().mockReturnValue(false),
+      };
+      const mockRoleModel = {
+        findByPk: jest.fn().mockReturnValue(false),
+      };
+
+      const controller = new AuthenticationController({
+        userModel: mockUserModel,
+        roleModel: mockRoleModel,
+        bcrypt, jwt,
+      });
+
+      await controller.handleGetUser(mockReq, mockRes);
+      const expectedErr = new RecordNotFoundError(mockUser.name);
+
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.json).toHaveBeenCalledWith(expectedErr);
+    });
+
+    it('should res.status(404) with RecordNotFoundError ' +
+      'if role not found.',
+    async () => {
+      const mockReq = {
+        user: mockUser,
+      };
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+      };
+
+      const mockUserModel = {
+        findByPk: jest.fn().mockReturnValue(true),
       };
       const mockRoleModel = {
         findByPk: jest.fn().mockReturnValue(false),
