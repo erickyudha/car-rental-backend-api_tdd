@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasOne(models.UserCar, {
         foreignKey: 'carId',
         as: 'userCar',
+        onDelete: 'cascade',
+        hooks: true,
       });
     }
 
