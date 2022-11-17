@@ -70,3 +70,5 @@ Default admin account data is available and can be changed in local on [`config/
 Unit and integration tests coverage of this project is ***>97.7%***, details can be seen on this image below.
 
 ![coverage test details](docs/coverage-test.png)
+
+![coverage test console](docs/coverage-test-console.png)
