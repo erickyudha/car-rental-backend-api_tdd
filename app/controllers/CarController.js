@@ -112,7 +112,7 @@ class CarController extends ApplicationController {
 
       const car = await this.getCarFromRequest(req);
 
-      const updatedCar = await this.carModel.update({
+      await this.carModel.update({
         name,
         price,
         size,
@@ -120,6 +120,7 @@ class CarController extends ApplicationController {
         isCurrentlyRented: false,
       }, {where: {id: car.id}});
 
+      const updatedCar = await this.getCarFromRequest(req);
       res.status(200).json(updatedCar);
     } catch (err) {
       res.status(422).json({
